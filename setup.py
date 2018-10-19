@@ -3,6 +3,7 @@ from setuptools import find_packages, setup
 from tasks import __version__ as version
 
 INSTALL_REQUIRES = [
+    "jsonschema>=2.6.0",
 ]
 
 DEV_TEST = [
