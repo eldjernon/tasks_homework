@@ -1,5 +1,5 @@
 from tasks import task, BaseTask
-from tasks.tasks import run_task
+from tasks import run_task
 from functools import reduce
 
 TEST_FUNC_NAME = '__test_func'

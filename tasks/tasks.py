@@ -1,7 +1,6 @@
 from typing import Text, Dict, Callable
 from abc import ABCMeta, abstractmethod
 import inspect
-import jsonschema
 from logging import getLogger
 
 logger = getLogger(__name__)
@@ -71,25 +70,14 @@ def _create_task_cls(name: Text, run: Callable, json_schema: Dict):
                  "json_schema": json_schema})
 
 
-def run_task(name: Text, params: Dict):
-    """
-    Task running
-    Args:
-        name: task registered name
-        params: task's kwargs
-
-    Returns:
-        task out
-    """
+def get_task_from_namespace(name: Text):
     task: BaseTask = _namespace.get(name, None)
 
     if task is None:
         raise KeyError(f"Task {name} does not registered!")
 
-    if task.json_schema is not None:
-        jsonschema.validate(params, task.json_schema)
+    if not issubclass(task, BaseTask):
+        raise TypeError(f"{name} with type {type(task)} "
+                        f"must be task decorated function or BaseTask subclass!")
 
-    if issubclass(task, BaseTask):
-        return task().run(**params)
-    else:
-        raise TypeError(f"{name} with type {type(task)} must be task decorated function or BaseTask subclass!")
+    return task

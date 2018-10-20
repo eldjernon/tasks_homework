@@ -2,18 +2,22 @@ from typing import Text, Dict
 import argparse
 import json
 import sys
-from .tasks import run_task
+from tasks.execute import run_task
+from web_app.app import runserver
 
 parser = argparse.ArgumentParser()
-parser.add_argument("name", type=str, help="name")
-parser.add_argument("-p", "--params", type=str, default="{}", help="params")
+parser.add_argument("command", type=str, help="name")
+parser.add_argument("-p", "--params", type=str, help="params", required=False)
 
 
 def run_cli():
     args = parser.parse_args()
-    name = args.name
-    params = _load_params(args.params)
-    sys.stdout.write(str(run_task(name, params)))
+    command = args.command
+    if command == "runserver" and args.params is None:
+        runserver()
+    else:
+        params = _load_params(args.params) if args.params else {}
+        sys.stdout.write(str(run_task(command, params)))
 
 
 def _load_params(params: Text) -> Dict:
