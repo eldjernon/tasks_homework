@@ -22,3 +22,10 @@ class TaskConfigurationError(BaseTasksError):
     Raised if  task's configuration failed
     """
     code = 300
+
+
+class EmailSendError(BaseTasksError):
+    """
+    Email send error
+    """
+    code = 400

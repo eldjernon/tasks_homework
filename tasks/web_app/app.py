@@ -3,6 +3,8 @@ from flask import request
 from flask import jsonify
 from flask.logging import create_logger
 
+from .utils import EmailSender
+
 from tasks.core.execute import run_task
 from tasks.exceptions import BaseTasksError
 
@@ -28,10 +30,17 @@ def run():
         jsonschema.validate(data, run_schema)
         task_name = data["task_name"]
         params = data["params"] or {}
+        email = data.get("email")
 
         task_result = run_task(task_name, params)
 
-        result = {"result": task_result}
+        if not email:
+            result = {"result": task_result}
+        else:
+            EmailSender().send_email(msg=str(task_result),
+                                     to_addr=email)
+            result = {"result": "OK"}
+
         return jsonify(result), 200
     except BaseTasksError as exc:
         logger.exception(exc)
