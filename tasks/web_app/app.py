@@ -3,7 +3,7 @@ from flask import request
 from flask import jsonify
 from flask.logging import create_logger
 
-from tasks.execute import run_task
+from tasks.core.execute import run_task
 from tasks.exceptions import BaseTasksError
 
 import jsonschema
@@ -15,7 +15,8 @@ logger = create_logger(app)
 run_schema = {'type': 'object',
               'properties': {
                   'task_name': {'type': 'string'},
-                  'params': {'type': ['object', 'null']}
+                  'params': {'type': ['object', 'null']},
+                  'email': {'type': 'string'}
               },
               'required': ['task_name', 'params']}
 

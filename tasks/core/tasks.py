@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 import inspect
 from logging import getLogger
 
-from .exceptions import TaskConfigurationError
+from tasks.exceptions import TaskConfigurationError
 
 logger = getLogger(__name__)
 

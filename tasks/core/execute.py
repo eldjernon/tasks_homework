@@ -4,7 +4,7 @@ from functools import wraps
 import jsonschema
 
 from tasks.exceptions import TaskExecutionError
-from tasks.tasks import get_task_from_namespace
+from tasks.core.tasks import get_task_from_namespace
 
 
 def save_result(results):

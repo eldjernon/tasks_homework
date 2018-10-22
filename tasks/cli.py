@@ -2,8 +2,9 @@ from typing import Text, Dict
 import argparse
 import json
 import sys
-from tasks.execute import run_task
-from web_app.app import runserver
+
+from tasks.core.execute import run_task
+from tasks.web_app.app import runserver
 
 parser = argparse.ArgumentParser()
 parser.add_argument("command", type=str, help="name")
