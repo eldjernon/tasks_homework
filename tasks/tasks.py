@@ -3,6 +3,8 @@ from abc import ABCMeta, abstractmethod
 import inspect
 from logging import getLogger
 
+from .exceptions import TaskConfigurationError
+
 logger = getLogger(__name__)
 
 _namespace = {}
@@ -46,9 +48,9 @@ def task_decorator(name: Text, json_schema: Dict = None):
 
 def _register_task(cls: "BaseTask"):
     if cls.name is None or not isinstance(cls.name, str):
-        raise AttributeError(f"Name must be string!")
+        raise TaskConfigurationError(f"Name must be string!")
     if cls.name in _namespace:
-        raise ValueError(f"Name {cls.name} is already in namespace!")
+        raise TaskConfigurationError(f"Name {cls.name} is already in namespace!")
     logger.info(f"{cls} registered ")
     _namespace[cls.name] = cls
 
@@ -74,10 +76,10 @@ def get_task_from_namespace(name: Text):
     task: BaseTask = _namespace.get(name, None)
 
     if task is None:
-        raise KeyError(f"Task {name} does not registered!")
+        raise TaskConfigurationError(f"Task {name} does not registered!")
 
     if not issubclass(task, BaseTask):
-        raise TypeError(f"{name} with type {type(task)} "
-                        f"must be task decorated function or BaseTask subclass!")
+        raise TaskConfigurationError(f"{name} with type {type(task)} "
+                                     f"must be task decorated function or BaseTask subclass!")
 
     return task

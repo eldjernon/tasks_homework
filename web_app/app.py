@@ -1,10 +1,12 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
-from tasks.execute import run_task
 from flask.logging import create_logger
-import jsonschema
 
+from tasks.execute import run_task
+from tasks.exceptions import BaseTasksError
+
+import jsonschema
 
 app = Flask("tasks_server")
 
@@ -30,11 +32,11 @@ def run():
 
         result = {"result": task_result}
         return jsonify(result), 200
-    except Exception as exc:
+    except BaseTasksError as exc:
         logger.exception(exc)
         err_msg = {
             "status": "ERROR",
-            "error_code": 100,
+            "error_code": exc.code,
             "error_msg": f"{exc}"
         }
         return jsonify(err_msg), 400

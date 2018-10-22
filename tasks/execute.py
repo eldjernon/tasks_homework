@@ -3,6 +3,7 @@ from multiprocessing import Process, Manager
 from functools import wraps
 import jsonschema
 
+from tasks.exceptions import TaskExecutionError
 from tasks.tasks import get_task_from_namespace
 
 
@@ -17,8 +18,11 @@ def save_result(results):
     def wrap(func):
         @wraps(func)
         def _wrap(*args, **kwargs):
-            result = func(*args, **kwargs)
-            results["task"] = result
+            try:
+                result = func(*args, **kwargs)
+                results["task"] = result
+            except Exception as exc:
+                results["error"] = exc
         return _wrap
 
     return wrap
@@ -46,4 +50,7 @@ def run_task(name: Text, params: Dict):
     process.start()
     process.join()
 
-    return results['task']
+    if "error" in results:
+        raise TaskExecutionError(results["error"])
+
+    return results["task"]
